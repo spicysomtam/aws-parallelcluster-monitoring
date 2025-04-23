@@ -95,7 +95,7 @@ case "${cfn_node_type}" in
 		sed -i 's/NodeList,AllocMem,Memory,CPUsState,StateLong/NodeList: ,AllocMem: ,Memory: ,CPUsState: ,StateLong:/' prometheus-slurm-exporter/node.go
 		cd prometheus-slurm-exporter
 		GOPATH=/root/go-modules-cache HOME=/root go mod download
-		GOPATH=/root/go-modules-cache HOME=/root go build
+		GOPATH=/root/go-modules-cache HOME=/root go build -buildvcs=false
 		mv ${monitoring_home}/prometheus-slurm-exporter/prometheus-slurm-exporter /usr/bin/prometheus-slurm-exporter
 
 		systemctl daemon-reload
