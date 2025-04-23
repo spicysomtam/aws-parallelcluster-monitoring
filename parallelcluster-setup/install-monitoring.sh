@@ -15,7 +15,7 @@ chkconfig docker on
 usermod -a -G docker $cfn_cluster_user
 
 #to be replaced with yum -y install docker-compose as the repository problem is fixed
-curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/v2.3.51/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 monitoring_dir_name=aws-parallelcluster-monitoring
