@@ -119,4 +119,7 @@ case "${cfn_node_type}" in
 			/usr/local/bin/docker-compose -f /home/${cfn_cluster_user}/${monitoring_dir_name}/docker-compose/docker-compose.compute.yml -p monitoring-compute up -d
         fi
 	;;
+	LoginNode)
+			/usr/local/bin/docker-compose -f /home/${cfn_cluster_user}/${monitoring_dir_name}/docker-compose/docker-compose.compute.yml -p monitoring-login up -d
+	;;
 esac
