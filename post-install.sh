@@ -20,18 +20,11 @@ setup_command=install-monitoring.sh
 user_home="/home/${cfn_cluster_user}"
 monitoring_home="${user_home}/${monitoring_dir_name}"
 
-case ${cfn_node_type} in
-    HeadNode | MasterServer)
-        #wget ${monitoring_url} -O ${monitoring_tarball}
-        #mkdir -p ${monitoring_home}
-        #tar xvf ${monitoring_tarball} -C ${monitoring_home} --strip-components 1
-        # use a git checkout instead of a tarball
-        (cd ${user_home}; git clone ${git_url}.git; cd -)
-    ;;
-    ComputeFleet)
-    
-    ;;
-esac
+#wget ${monitoring_url} -O ${monitoring_tarball}
+#mkdir -p ${monitoring_home}
+#tar xvf ${monitoring_tarball} -C ${monitoring_home} --strip-components 1
+# use a git checkout instead of a tarball
+(cd ${user_home}; git clone ${git_url}.git; cd -)
 
 #Execute the monitoring installation script
 bash -x "${monitoring_home}/parallelcluster-setup/${setup_command}" >/tmp/monitoring-setup.log 2>&1
