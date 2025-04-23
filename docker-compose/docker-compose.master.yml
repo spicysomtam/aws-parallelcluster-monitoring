@@ -14,7 +14,9 @@ services:
         image: prom/pushgateway
     prometheus:
         container_name: prometheus
-        network_mode: host
+        network_mode: bridge
+        ports:
+          - "9090:9090"
         pid: host
         restart: unless-stopped
         volumes:
