@@ -4,14 +4,13 @@
 # SPDX-License-Identifier: MIT-0
 #
 #
-#version: '3.8'
 services:
     pushgateway:
         container_name: pushgateway
         network_mode: host
         pid: host
         restart: unless-stopped
-        image: prom/pushgateway
+        image: prom/pushgateway:v1.11.1
     prometheus:
         container_name: prometheus
         network_mode: bridge
@@ -22,7 +21,7 @@ services:
         volumes:
             - '/home/$cfn_cluster_user/__MONITORING_DIR__/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml'
             - 'prometheus-data:/prometheus'
-        image: prom/prometheus
+        image: prom/prometheus:v3.3.0
         command:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus'
@@ -41,7 +40,7 @@ services:
         volumes:
             - '/home/$cfn_cluster_user/__MONITORING_DIR__/grafana:/etc/grafana/provisioning'
             - 'grafana-data:/var/lib/grafana'
-        image: grafana/grafana
+        image: grafana/grafana:11.6.1
     prometheus-node-exporter:
         container_name: node-exporter
         network_mode: host
@@ -49,7 +48,7 @@ services:
         restart: unless-stopped
         volumes:
             - '/:/host:ro,rslave'
-        image: quay.io/prometheus/node-exporter
+        image: quay.io/prometheus/node-exporter:v1.9.1
         command:
             - '--path.rootfs=/host'
     nginx:
@@ -61,7 +60,7 @@ services:
             - '/home/$cfn_cluster_user/__MONITORING_DIR__/nginx/conf.d:/etc/nginx/conf.d/'
             - '/home/$cfn_cluster_user/__MONITORING_DIR__/nginx/ssl:/etc/ssl/'
             - '/home/$cfn_cluster_user/__MONITORING_DIR__/www:/usr/share/nginx/html'
-        image: nginx
+        image: nginx:1.28.0
 volumes:
     prometheus-data:
     grafana-data:
