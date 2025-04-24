@@ -60,7 +60,8 @@ case "${cfn_node_type}" in
 		sed -i "s/__AWS_REGION__/${cfn_region}/g"           	${monitoring_home}/grafana/dashboards/ParallelCluster.json
 
 		sed -i "s/__AWS_REGION__/${cfn_region}/g"           	${monitoring_home}/grafana/dashboards/logs.json
-		sed -i "s/__LOG_GROUP__NAMES__/${log_group_names}/g"    ${monitoring_home}/grafana/dashboards/logs.json
+		sed -i "s#__LOG_GROUP__NAMES__#${log_group_names}#g"  ${monitoring_home}/grafana/dashboards/logs.json
+		sed -i "s/__LOCAL_IP__/${local_ip}/g"             		${monitoring_home}/grafana/datasources/datasource.yml
 
 		sed -i "s/__Application__/${stack_name}/g"          	${monitoring_home}/prometheus/prometheus.yml
 		sed -i "s/__AWS_REGION__/${cfn_region}/g"          		${monitoring_home}/prometheus/prometheus.yml

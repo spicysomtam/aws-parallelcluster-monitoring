@@ -31,7 +31,9 @@ services:
             - '--web.route-prefix=/'
     grafana:
         container_name: grafana
-        network_mode: host
+        network_mode: bridge
+        ports:
+          - "3000:3000"
         pid: host
         restart: unless-stopped
         environment:
