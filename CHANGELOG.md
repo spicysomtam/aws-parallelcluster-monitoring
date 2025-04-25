@@ -9,4 +9,7 @@ April 2025 Alastair Munro:
 -Added node-exporter-sg to instructions and config.
 -Fixed CW logs; CW log group has changed from <stack> to <stack>-<date-stamp>. Also grafana cannot get AWS creds so change docker network to bridge.
 -Fixed up prometheus ec2_sd_config so it works for all instance types, only uses port 9100 and there is just one config definition.
--Added Instance Name to node list so you can see what is Compute/Login/HeadNode. Compute Node List renamed to Node List.
+-Added Instance Name to node list so you can see what is Compute/Login/HeadNode. Compute Node List renamed to Node List and lists all nodes so you know what each node is.
+-Compute-node-details dashboard renamed to compute-login-node-details.
+-Unable to test gpu dashboard but it does seem to filter on GPU instance types using regex [pg][2-4].* (p or g types).
+-Cron expression invalid for 1h-cost-metrics.sh so not running. Fixed.
