@@ -60,7 +60,7 @@ Note: *while almost all components are under the Apache2 license, only **[Promet
 
 Tested with Parallel Cluster 3.11.1 on Amazon Linux 2023 (Amazon Linux 2 should also work but nearing end of life so use 2023 instead). 
 
-Updated deployment and instructions April 2025.
+Updated deployment and instructions April 2025; see [CHANGELOG](CHANGELOG.md).
 
 1. Create a Security Group that allows you to access the `HeadNode` on Port 80 and 443 from the Internet. In the following example we open the security group up to `0.0.0.0/0`, which is fine for testing, but we highly advise restricting this down further. More information on how to create your security groups can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html#creating-a-security-group)
 
