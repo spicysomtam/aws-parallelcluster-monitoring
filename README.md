@@ -2,13 +2,13 @@
 
 This is a sample solution based on Grafana for monitoring various component of an HPC cluster built with AWS ParallelCluster.
 There are 6 dashboards that can be used as they are or customized as you need.
-* [ParallelCluster Summary](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/ParallelCluster.json) - this is the main dashboard that shows general monitoring info and metrics for the whole cluster. It includes Slurm metrics and Storage performance metrics.
-* [HeadNode Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/master-node-details.json) - this dashboard shows detailed metric for the HeadNode, including CPU, Memory, Network and Storage usage.
-* [Node List](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/node-list.json) - this dashboard lists all the HPC nodes (HeadNode, Compute, LoginNode). Each entry is a link to a more detailed page.
-* [Compute/Login Node Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/compute-login-node-details.json) - similarly to the HeadNode details this dashboard show the same metric for compute and login nodes (not GPU nodes). Todo: Split these out into seperate dashboards.
-* [GPU Nodes Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/gpu.json) - This dashboard shows GPUs releated metrics collected using nvidia-dcgm container.
-* [Cluster Logs](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/logs.json) - This dashboard shows all the logs of your HPC Cluster. The logs are pushed by AWS ParallelCluster to AWS ClowdWatch Logs and finally reported here.
-* [Cluster Costs](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/costs.json)(beta / in developemnt) - This dashboard shows the cost associated to AWS Service utilized by your cluster. It includes: [EC2](https://aws.amazon.com/ec2/pricing/), [EBS](https://aws.amazon.com/ebs/pricing/), [FSx](https://aws.amazon.com/fsx/lustre/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [EFS](https://aws.amazon.com/efs/pricing/).
+* [ParallelCluster Summary](grafana/dashboards/ParallelCluster.json) - this is the main dashboard that shows general monitoring info and metrics for the whole cluster. It includes Slurm metrics and Storage performance metrics.
+* [HeadNode Details](grafana/dashboards/master-node-details.json) - this dashboard shows detailed metric for the HeadNode, including CPU, Memory, Network and Storage usage.
+* [Node List](grafana/dashboards/node-list.json) - this dashboard lists all the HPC nodes (HeadNode, Compute, LoginNode). Each entry is a link to a more detailed page.
+* [Compute/Login Node Details](grafana/dashboards/compute-login-node-details.json) - similarly to the HeadNode details this dashboard show the same metric for compute and login nodes (not GPU nodes). Todo: Split these out into seperate dashboards.
+* [GPU Nodes Details](grafana/dashboards/gpu.json) - This dashboard shows GPUs releated metrics collected using nvidia-dcgm container.
+* [Cluster Logs](grafana/dashboards/logs.json) - This dashboard shows all the logs of your HPC Cluster. The logs are pushed by AWS ParallelCluster to AWS ClowdWatch Logs and finally reported here.
+* [Cluster Costs](grafana/dashboards/costs.json)(beta / in developemnt) - This dashboard shows the cost associated to AWS Service utilized by your cluster. It includes: [EC2](https://aws.amazon.com/ec2/pricing/), [EBS](https://aws.amazon.com/ebs/pricing/), [FSx](https://aws.amazon.com/fsx/lustre/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [EFS](https://aws.amazon.com/efs/pricing/).
 
 
 ## AWS ParallelCluster
@@ -90,7 +90,7 @@ aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol
 ```yaml
 CustomActions:
   OnNodeConfigured:
-    Script: https://raw.githubusercontent.com/spicysomtam/aws-parallelcluster-monitoring/main/post-install.sh
+    Script: https:/<this-repo-raw-url>/aws-parallelcluster-monitoring/main/post-install.sh
     Args:
       - main
 Iam:
@@ -104,7 +104,7 @@ Tags:
     Value: 'true'
 ```
 
-4. Connect to `https://headnode_public_ip` (ignore the invalid certificate warning).  Authenticate to Grafana as `admin` with the default [Grafana password](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/docker-compose/docker-compose.master.yml#L43). A landing page will be presented to you with links to the Prometheus data collector service and the Grafana dashboards.
+4. Connect to `https://<headnode_public_ip>` (ignore the invalid certificate warning).  Authenticate to Grafana as `admin` with the default [Grafana password](docker-compose/docker-compose.master.yml#L40). A landing page will be presented to you with links to the Prometheus data collector service and the Grafana dashboards.
 
 ![Login Screen](docs/Login1.png?raw=true "Login Screen")
 ![Login Screen](docs/Login2.png?raw=true "Login Screen")
@@ -117,4 +117,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the [LICENSE](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/LICENSE) file.
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
