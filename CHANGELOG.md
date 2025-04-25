@@ -16,3 +16,4 @@
 - Unable to test gpu dashboard but it does seem to filter on GPU instance types using regex [pg][2-4].* (p or g types).
 - Cron expression invalid for 1h-cost-metrics.sh so not running. Fixed.
 - Todo: 1m and 1h scripts generating custom metrics (1m-cost-metrics.sh, 1h-cost-metrics.sh) need alot of work to bring up to date.
+- Quickstart instructions incomplete and duplicated. Corrected and removed duplicate section.

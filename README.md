@@ -4,8 +4,8 @@ This is a sample solution based on Grafana for monitoring various component of a
 There are 6 dashboards that can be used as they are or customized as you need.
 * [ParallelCluster Summary](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/ParallelCluster.json) - this is the main dashboard that shows general monitoring info and metrics for the whole cluster. It includes Slurm metrics and Storage performance metrics.
 * [HeadNode Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/master-node-details.json) - this dashboard shows detailed metric for the HeadNode, including CPU, Memory, Network and Storage usage.
-* [Compute Node List](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/compute-node-list.json) - this dashboard show the list of the available compute nodes. Each entry is a link to a more detailed page.
-* [Compute Node Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/compute-node-details.json) - similarly to the HeadNode details this dashboard show the same metric for the compute nodes.
+* [Node List](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/node-list.json) - this dashboard lists all the HPC nodes (HeadNode, Compute, LoginNode). Each entry is a link to a more detailed page.
+* [Compute/Login Node Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/compute-login-node-details.json) - similarly to the HeadNode details this dashboard show the same metric for compute and login nodes (not GPU nodes). Todo: Split these out into seperate dashboards.
 * [GPU Nodes Details](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/gpu.json) - This dashboard shows GPUs releated metrics collected using nvidia-dcgm container.
 * [Cluster Logs](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/logs.json) - This dashboard shows all the logs of your HPC Cluster. The logs are pushed by AWS ParallelCluster to AWS ClowdWatch Logs and finally reported here.
 * [Cluster Costs](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/costs.json)(beta / in developemnt) - This dashboard shows the cost associated to AWS Service utilized by your cluster. It includes: [EC2](https://aws.amazon.com/ec2/pricing/), [EBS](https://aws.amazon.com/ebs/pricing/), [FSx](https://aws.amazon.com/fsx/lustre/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [EFS](https://aws.amazon.com/efs/pricing/).
@@ -45,7 +45,7 @@ Note: *while almost all components are under the Apache2 license, only **[Promet
 
 #### ComputeNodes Dashboard
 
-![Compute Node List](docs/List.png?raw=true "Compute Node List")
+![Node List](docs/List-new.png?raw=true "Node List")
 
 #### Logs
 
@@ -56,7 +56,11 @@ Note: *while almost all components are under the Apache2 license, only **[Promet
 ![Costs](docs/Costs.png?raw=true "Best - AWS ParallelCluster Costs")
 
 
-## Quickstart for Parallel Cluster 3.x (eg 3.11.1)
+## Quickstart for Parallel Cluster 3.x
+
+Tested with Parallel Cluster 3.11.1 on Amazon Linux 2023 (Amazon Linux 2 should also work but nearing end of life so use 2023 instead). 
+
+Updated deployment and instructions April 2025.
 
 1. Create a Security Group that allows you to access the `HeadNode` on Port 80 and 443 from the Internet. In the following example we open the security group up to `0.0.0.0/0`, which is fine for testing, but we highly advise restricting this down further. More information on how to create your security groups can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html#creating-a-security-group)
 
@@ -67,7 +71,7 @@ security_group=$(aws ec2 create-security-group --group-name grafana-sg --descrip
 aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol tcp --port 443 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol tcp --port 80 —-cidr 0.0.0.0/0
 ```
-2. Create a security group for the scraping of stats by prometheus node-exporter on `Compute` and `Login` nodes. Set the cidr range to the vpc cidr, since we don't know the IP address of the head node (yet; parallel cluster not deployed yet):
+2. Create a security group for the scraping of stats by prometheus node-exporter on `Compute` and `Login` nodes (which includes GPU nodes). Set the cidr range to the vpc cidr, since we don't know the IP address of the head node (parallel cluster not deployed yet):
 ```bash
 read -p "Please enter the vpc id of your cluster: " vpc_id
 echo -e "creating a security group with $vpc_id..."
@@ -76,7 +80,7 @@ aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol
 ```
 
 3. Configure the [parallel cluster configuration file](https://docs.aws.amazon.com/parallelcluster/latest/ug/cluster-configuration-file-v3.html) (see below example):
-* Use the post install script **post-install.sh** for the `HeadNode`, `LoginNodes` and `Scheduling` sections (Compute nodes).
+* Use the post install script **post-install.sh** for the `HeadNode`, `LoginNodes` and `Scheduling` sections (Compute and GPU nodes).
 * The `grafana-sg` Security Group you created above is added to block `AdditionalSecurityGroups` for only the `HeadNode` section. 
 
 * The `node-exporter-sg` Security Group you created above is specified in the `AdditionalSecurityGroups` block for `LoginNode` and `Scheduling` sections.
