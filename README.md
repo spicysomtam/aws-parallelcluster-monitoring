@@ -43,7 +43,7 @@ Note: *while almost all components are under the Apache2 license, only **[Promet
 
 ![Head Node](docs/HeadNode.png?raw=true "Head Node")
 
-#### ComputeNodes Dashboard
+#### Node List Dashboard
 
 ![Node List](docs/List-new.png?raw=true "Node List")
 
@@ -51,7 +51,7 @@ Note: *while almost all components are under the Apache2 license, only **[Promet
 
 ![Logs](docs/Logs.png?raw=true "AWS ParallelCluster Logs")
 
-#### Cluster Cost
+#### Cluster Costs
 
 ![Costs](docs/Costs.png?raw=true "Best - AWS ParallelCluster Costs")
 
