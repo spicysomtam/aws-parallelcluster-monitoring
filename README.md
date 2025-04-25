@@ -10,31 +10,6 @@ There are 6 dashboards that can be used as they are or customized as you need.
 * [Cluster Logs](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/logs.json) - This dashboard shows all the logs of your HPC Cluster. The logs are pushed by AWS ParallelCluster to AWS ClowdWatch Logs and finally reported here.
 * [Cluster Costs](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/grafana/dashboards/costs.json)(beta / in developemnt) - This dashboard shows the cost associated to AWS Service utilized by your cluster. It includes: [EC2](https://aws.amazon.com/ec2/pricing/), [EBS](https://aws.amazon.com/ebs/pricing/), [FSx](https://aws.amazon.com/fsx/lustre/pricing/), [S3](https://aws.amazon.com/s3/pricing/), [EFS](https://aws.amazon.com/efs/pricing/).
 
-## Quickstart
-Create a cluster using [AWS ParallelCluster](https://www.hpcworkshops.com/03-hpc-aws-parallelcluster-workshop.html) and include the following configuration:
-
-### PC 3.X
-
-Update your cluster's config by adding the following snippet in the `HeadNode` and `Scheduling` section:
-
-```yaml
-CustomActions:
-  OnNodeConfigured:
-    Script: https://raw.githubusercontent.com/aws-samples/aws-parallelcluster-monitoring/main/post-install.sh
-    Args:
-      - v0.9
-Iam:
-  AdditionalIamPolicies:
-    - Policy: arn:aws:iam::aws:policy/CloudWatchFullAccess
-    - Policy: arn:aws:iam::aws:policy/AWSPriceListServiceFullAccess
-    - Policy: arn:aws:iam::aws:policy/AmazonSSMFullAccess
-    - Policy: arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
-Tags:
-  - Key: 'Grafana'
-    Value: 'true'
-```
-
-See the complete example config: [pcluster.yaml](parallelcluster-setup/pcluster.yaml).
 
 ## AWS ParallelCluster
 **AWS ParallelCluster** is an AWS supported Open Source cluster management tool that makes it easy for you to deploy and
@@ -81,9 +56,9 @@ Note: *while almost all components are under the Apache2 license, only **[Promet
 ![Costs](docs/Costs.png?raw=true "Best - AWS ParallelCluster Costs")
 
 
-## Quickstart
+## Quickstart for Parallel Cluster 3.x (eg 3.11.1)
 
-1. Create a Security Group that allows you to access the `HeadNode` on Port 80 and 443. In the following example we open the security group up to `0.0.0.0/0` however we highly advise restricting this down further. More information on how to create your security groups can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html#creating-a-security-group)
+1. Create a Security Group that allows you to access the `HeadNode` on Port 80 and 443 from the Internet. In the following example we open the security group up to `0.0.0.0/0`, which is fine for testing, but we highly advise restricting this down further. More information on how to create your security groups can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-sg.html#creating-a-security-group)
 
 ```bash
 read -p "Please enter the vpc id of your cluster: " vpc_id
@@ -92,15 +67,28 @@ security_group=$(aws ec2 create-security-group --group-name grafana-sg --descrip
 aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol tcp --port 443 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol tcp --port 80 —-cidr 0.0.0.0/0
 ```
+2. Create a security group for the scraping of stats by prometheus node-exporter on `Compute` and `Login` nodes. Set the cidr range to the vpc cidr, since we don't know the IP address of the head node (yet; parallel cluster not deployed yet):
+```bash
+read -p "Please enter the vpc id of your cluster: " vpc_id
+echo -e "creating a security group with $vpc_id..."
+security_group=$(aws ec2 create-security-group --group-name node-exporter-sg --description "Scraping compute and login node stats via prometheus" --vpc-id ${vpc_id} --output text)
+aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol tcp --port 9100 --cidr <cidr-of-vpc>
+```
 
-2. Create a cluster with the post install script [post-install.sh](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/post-install.sh), the Security Group you created above as [AdditionalSecurityGroup](https://docs.aws.amazon.com/parallelcluster/latest/ug/Scheduling-v3.html#yaml-Scheduling-SlurmQueues-Networking-AdditionalSecurityGroups) on the HeadNode, and a few additional IAM Policies. You can find a complete AWS ParallelCluster template [here](parallelcluster-setup/pcluster.yaml). Please note that, at the moment, the installation script has only been tested using [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/).
+3. Configure the [parallel cluster configuration file](https://docs.aws.amazon.com/parallelcluster/latest/ug/cluster-configuration-file-v3.html) (see below example):
+* Use the post install script **post-install.sh** for the `HeadNode`, `LoginNodes` and `Scheduling` sections (Compute nodes).
+* The `grafana-sg` Security Group you created above is added to block `AdditionalSecurityGroups` for only the `HeadNode` section. 
+
+* The `node-exporter-sg` Security Group you created above is specified in the `AdditionalSecurityGroups` block for `LoginNode` and `Scheduling` sections.
+* Add the Iam `AdditionalIamPolicies` to only the `HeadNode` section.
+* Include the following `Tags` to the configuration file.
 
 ```yaml
 CustomActions:
   OnNodeConfigured:
-    Script: https://raw.githubusercontent.com/aws-samples/aws-parallelcluster-monitoring/main/post-install.sh
+    Script: https://raw.githubusercontent.com/spicysomtam/aws-parallelcluster-monitoring/main/post-install.sh
     Args:
-      - v0.9
+      - main
 Iam:
   AdditionalIamPolicies:
     - Policy: arn:aws:iam::aws:policy/CloudWatchFullAccess
@@ -112,7 +100,7 @@ Tags:
     Value: 'true'
 ```
 
-3. Connect to `https://headnode_public_ip` or `http://headnode_public_ip` (all `http` connections will be automatically redirected to `https`) and authenticate with the default [Grafana password](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/docker-compose/docker-compose.master.yml#L43). A landing page will be presented to you with links to the Prometheus database service and the Grafana dashboards.
+4. Connect to `https://headnode_public_ip` (ignore the invalid certificate warning).  Authenticate to Grafana as `admin` with the default [Grafana password](https://github.com/aws-samples/aws-parallelcluster-monitoring/blob/main/docker-compose/docker-compose.master.yml#L43). A landing page will be presented to you with links to the Prometheus data collector service and the Grafana dashboards.
 
 ![Login Screen](docs/Login1.png?raw=true "Login Screen")
 ![Login Screen](docs/Login2.png?raw=true "Login Screen")
