@@ -57,6 +57,21 @@
           "type": "hidden"
         },
         {
+          "alias": "Instance Name",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "instance_name",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
           "alias": "Availability Zone",
           "align": "left",
           "colorMode": null,
@@ -163,20 +178,20 @@
       ],
       "targets": [
         {
-          "expr": "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[1m])) by (instance_id, instance_type, instance_az)",
+          "expr": "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[1m])) by (instance_id, instance_type, instance_az, instance_name)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(node_network_transmit_bytes_total[1m])) by (instance_id, instance_type, instance_az)",
+          "expr": "sum(rate(node_network_transmit_bytes_total[1m])) by (instance_id, instance_type, instance_az, instance_name)",
           "format": "table",
           "instant": true,
           "refId": "B"
         },
         {
-          "expr": "sum(rate(node_network_receive_bytes_total[1m])) by (instance_id, instance_type, instance_az)",
+          "expr": "sum(rate(node_network_receive_bytes_total[1m])) by (instance_id, instance_type, instance_az, instance_name)",
           "format": "table",
           "instant": true,
           "refId": "C"
@@ -230,7 +245,7 @@
     ]
   },
   "timezone": "",
-  "title": "Compute Node List",
+  "title": "Node List",
   "uid": "SugNQvuWk",
   "version": 1
 }

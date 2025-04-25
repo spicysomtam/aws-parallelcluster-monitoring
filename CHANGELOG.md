@@ -1,0 +1,12 @@
+April 2025 Alastair Munro:
+-Fixed prometheus-slurm-exporter build; added arg -buildvcs=false.
+-Upgraded docker-compose to a new version; version installed really old.
+-Fixed issue with prometheus unable to scrape ec2_instances (changed networking from host to bridge).
+-prometheus also reports on LoginNodes. Todo: break out compute and login nodes in Grafana; currently login nodes combined with compute nodes.
+-Docker compose using tagged images rather than 'latest'; more predictable behaviour in the future.
+-Removed docker compose version from docker compose files; obsolite.
+-Added login nodes to the environment and installed node-exporter in docker for prometheus on login nodes.
+-Added node-exporter-sg to instructions and config.
+-Fixed CW logs; CW log group has changed from <stack> to <stack>-<date-stamp>. Also grafana cannot get AWS creds so change docker network to bridge.
+-Fixed up prometheus ec2_sd_config so it works for all instance types, only uses port 9100 and there is just one config definition.
+-Added Instance Name to node list so you can see what is Compute/Login/HeadNode. Compute Node List renamed to Node List.

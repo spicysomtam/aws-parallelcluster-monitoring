@@ -37,4 +37,19 @@ scrape_configs:
             values:
               - Compute
               - LoginNode
-
+              - HeadNode
+    relabel_configs:
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: instance_name
+      - source_labels: [__meta_ec2_tag_Application]
+        target_label: instance_grafana
+      - source_labels: [__meta_ec2_instance_id]
+        target_label: instance_id
+      - source_labels: [__meta_ec2_availability_zone]
+        target_label: instance_az
+      - source_labels: [__meta_ec2_instance_state]
+        target_label: instance_state
+      - source_labels: [__meta_ec2_instance_type]
+        target_label: instance_type
+      - source_labels: [__meta_ec2_vpc_id]
+        target_label: instance_vpc
