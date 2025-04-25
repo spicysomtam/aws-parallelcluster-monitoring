@@ -81,9 +81,9 @@ aws ec2 authorize-security-group-ingress --group-id ${security_group} --protocol
 
 3. Configure the [parallel cluster configuration file](https://docs.aws.amazon.com/parallelcluster/latest/ug/cluster-configuration-file-v3.html) (see below example):
 * Use the post install script **post-install.sh** for the `HeadNode`, `LoginNodes` and `Scheduling` sections (Compute and GPU nodes).
-* The `grafana-sg` Security Group you created above is added to block `AdditionalSecurityGroups` for only the `HeadNode` section. 
+* The `grafana-sg` Security Group you created above is included in `AdditionalSecurityGroups` for only the `HeadNode` section. 
 
-* The `node-exporter-sg` Security Group you created above is specified in the `AdditionalSecurityGroups` block for `LoginNode` and `Scheduling` sections.
+* The `node-exporter-sg` Security Group you created above is included in `AdditionalSecurityGroups` for `LoginNode` and `Scheduling` sections (Compute and GPU nodes).
 * Add the Iam `AdditionalIamPolicies` to only the `HeadNode` section.
 * Include the following `Tags` to the configuration file.
 
